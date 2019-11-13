@@ -1,0 +1,95 @@
+;;==============================================
+;; Glbaol setting
+;;==============================================
+COMMON(
+    ?PR?SYSTIMERINTPROC0?SYSTIMER
+    , ?PR?SYSTIMERINTPROC1?SYSTIMER
+    , ?PR?SYSTIMERINTPROC2?SYSTIMER
+    , ?PR?SYSTIMERWDINTPROC?SYSTIMER
+    , ?PR?SCALERMCUMEMORYZEROINIT?RL6463_SERIES_MCU
+
+    ; add for IIC access common bank table
+    ; , ?PR?_SCALERMCUHWIICWRITE?SCALERCOMMONMCU
+    ; , ?PR?_USERCOMMONEEPROMWRITE?USERCOMMONNVRAMSYSTEM
+    ; , ?PR?_USERCOMMONEEPROMIICWRITE?USERCOMMONNVRAMSYSTEM
+)
+
+BANKAREA(0x0000, 0xFFFF)
+NOIC
+PRINT(".\Output\RL6463_Project.m51")
+RAMSIZE(256)
+XDATA(0XE000-0XE5FF)
+
+
+;;==============================================
+;; Kernel autolink setting
+;;==============================================
+; for multi-panel application
+;@if(_PANEL_EXIST_MULTIPANEL == _ON)
+    ;@COMMON(SCALERDDOMAIN)
+;@endif
+
+; PC99 EDID settings
+;@BANK0(RL6463_SERIES_PC99EDID)
+;@TABLE(?CO?RL6463_SERIES_PC99EDID, 0xFD70)
+;@OVERLAY(* ! ?CO?RL6463_SERIES_PC99EDID)
+
+; Digital Signature Setting
+;@if(_CODE_DIGITAL_SIGNATURE_SUPPORT == _SIGNATURE_TYPE_EXTERNAL)
+    ;@BANK5(USERCOMMONSIGNKEYTABLE)
+    ;@TABLE(?CO?USERCOMMONSIGNKEYTABLE, 0xF000)
+    ;@OVERLAY(* ! ?CO?USERCOMMONSIGNKEYTABLE)
+;@endif
+
+
+;;==============================================
+;; User autolink setting
+;;==============================================
+; for flash partition application
+;;;@if(_FLASH_PARTITION_TYPE != _FLASH_PARTITION_NONE)
+;;    ;@if(_FLASH_PARTITION_TYPE == _FLASH_PARTITION_BOOT)
+;;        ;@BANK0(SYSMAIN)
+;;    ;@elif(_FLASH_PARTITION_TYPE == _FLASH_PARTITION_USER)
+;;        ;@if(_FLASH_PARTITION_RELOCATABLE_SUPPORT == _ON)
+;;            ;@BANK0(SYSMAIN, RTD2014USERBOOT)
+;;        ;@else
+;;            ;@BANK0()
+;;            ;@BANK1()
+;;            ;@BANK2()
+;;            ;@BANK3()
+;;            ;@BANK4()
+;;            ;@BANK5()
+;;            ;@BANK6()
+;;            ;@BANK7()
+;;            ;@BANK8()
+;;            ;@BANK9()
+;;            ;@BANK10()
+;;            ;@BANK11()
+;;            ;@BANK12()
+;;            ;@BANK13()
+;;            ;@BANK14()
+;;            ;@BANK15()
+;;            ;@BANK16(SYSMAIN, RTD2014USERBOOT)
+;;        ;@endif
+;;        ;@TABLE(?CO?RTD2014USERBOOT, 0xF8FE)
+;;    ;@endif
+;;
+;;    ;@FUNC(?PR?SYSMAINSTARTUSERCODE?SYSMAIN, 0x4000)
+;;;@endif
+
+
+;;==============================================
+;; Non-autolink setting
+;;==============================================
+BANK0(?CO?SYSSOURCE, ?CO?SCALERVGATOP, ?CO?SCALERGDIPHYTX)
+BANK2(?CO?SCALERPLL, ?CO?RL6463_SERIES_COLOR*, ?CO?OSDDRAWWINDOW, ?CO?SCALERCOLOR)
+BANK3(?CO?RL6463_SERIES_SCALING)
+BANK5(?CO?USERCOMMONMODESEARCH, ?CO?USERCOMMONADJUST, ?CO?USERCOMMONDDCCIFUNCTION, ?CO?USERCOMMONINTERFACE, ?CO?USERCOMMONNVRAMSYSTEM)
+BANK11(?CO?RTD2014USERADJUSTOUTPUTGAMMA)
+;BANK11(?CO?RTD2014USERADJUSTOUTPUTGAMMA, ?CO?RTD2014USERADJUSTUNIFORMITY, ?CO?RTD2014USERADJUST3DGAMMA)
+BANK12(?CO?RTD2014DDCCI, ?CO?RTD2014NVRAMOSD, ?CO?RTD2014USERINTERFACE, ?CO?RTD2014USERADJUST)
+BANK13(?CO?RTD2014OSDFONTDYNAMICICON_1, ?CO?RTDFACTORYFUNCTION, ?CO?RTDFACTORYMODE)
+BANK14(?CO?RTD2014OSD)
+BANK15(?CO?RTD2014OSDPALETTE, ?CO?RTD2014OSDFONTVLC, ?CO?RTD2014OSDFONTDYNAMICICON_2, ?CO?RTD2014OSDFONTPROP, ?CO?RTD2014OSDFONTTABLE)
+
+
